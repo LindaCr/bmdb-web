@@ -1,7 +1,14 @@
 package com.bmdb.business;
 
+import javax.persistence.*;
+
+
+@Entity
 public class Credit {
 	
+	
+	@Id
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private int id;
 	private Actor actor;
 	private Movie movie;
