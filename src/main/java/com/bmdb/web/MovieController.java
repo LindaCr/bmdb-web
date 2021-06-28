@@ -1,12 +1,13 @@
 package com.bmdb.web;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.bmdb.business.Movie;
 import com.bmdb.db.MovieRepo;
+import java.util.Optional;
+
 
 @CrossOrigin
 @RestController
@@ -17,13 +18,13 @@ public class MovieController {
 	private MovieRepo movieRepo;
 	
 	@GetMapping("/")
-	public List<Movie> getAll(){
+	public Iterable<Movie> getAll(){
 		return movieRepo.findAll();
 	}
 	
 	@GetMapping("/{id}")
-	public Movie get(@PathVariable int id){
-		return movieRepo.getById(id);
+	public Optional<Movie> get(@PathVariable int id){
+		return movieRepo.findById(id);
 	}
 	
 	@PostMapping("/")
@@ -38,7 +39,7 @@ public class MovieController {
 	
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable int id) {
-		movieRepo.deleteById(id);;
+		movieRepo.deleteById(id);
 	}
 	
 	
