@@ -3,9 +3,13 @@ package com.bmdb.web;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.bmdb.business.Actor;
+import com.bmdb.business.Movie;
 import com.bmdb.db.ActorRepo;
 
 
@@ -24,7 +28,7 @@ public class ActorController {
 	}
 
 	@GetMapping("/{id}")
-	public Optional<Actor> get(@PathVariable int id) {
+	public Optional<Actor> get(@PathVariable Integer id) {
 		return actorRepo.findById(id);
 	}
 	
@@ -39,8 +43,28 @@ public class ActorController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public void delete(@PathVariable int id) {
-		actorRepo.deleteById(id);
+	public Optional<Actor> delete(@PathVariable Integer id) {
+		Optional<Actor> actor=actorRepo.findById(id);
+		if (actor.isPresent()) {
+			try {
+			actorRepo.deleteById(id);
+			}
+			catch (DataIntegrityViolationException dive) {
+				//catch dive when movie exists as fk on another table
+				System.err.println(dive.getRootCause().getMessage());
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+						"Foreign Key Constraint Issue- actor id: "+id+"is referred to elsewhere.");
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+						"Exception caught during actor delete");
+			}
+		}
+		else {
+			System.err.println("Actor delete error- no actor found for id"+id);
+		}
+		return actor;
 	}
 	
 	
