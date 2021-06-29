@@ -2,7 +2,10 @@ package com.bmdb.web;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.bmdb.business.Movie;
 import com.bmdb.db.MovieRepo;
@@ -23,7 +26,7 @@ public class MovieController {
 	}
 	
 	@GetMapping("/{id}")
-	public Optional<Movie> get(@PathVariable int id){
+	public Optional<Movie> get(@PathVariable Integer id){
 		return movieRepo.findById(id);
 	}
 	
@@ -38,8 +41,28 @@ public class MovieController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public void delete(@PathVariable int id) {
-		movieRepo.deleteById(id);
+	public Optional<Movie> delete(@PathVariable Integer id) {
+		Optional<Movie> movie=movieRepo.findById(id);
+		if (movie.isPresent()) {
+			try {
+			movieRepo.deleteById(id);
+			}
+			catch (DataIntegrityViolationException dive) {
+				//catch dive when movie exists as fk on another table
+				System.err.println(dive.getRootCause().getMessage());
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+						"Foreign Key Constraint Issue- movie id: "+id+"is referred to elsewhere.");
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+						"Exception caught during movie delete");
+			}
+		}
+		else {
+			System.err.println("Movie delete error- no movie found for id"+id);
+		}
+		return movie;
 	}
 	
 	
