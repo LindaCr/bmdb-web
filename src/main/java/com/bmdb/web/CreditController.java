@@ -3,9 +3,13 @@ package com.bmdb.web;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.bmdb.business.Credit;
+import com.bmdb.business.Movie;
 import com.bmdb.db.CreditRepo;
 
 @CrossOrigin
@@ -22,7 +26,7 @@ public class CreditController {
 	}
 	
 	@GetMapping("/{id}")
-	public Optional<Credit> get(@PathVariable int id) {
+	public Optional<Credit> get(@PathVariable Integer id) {
 		return creditRepo.findById(id);
 	}
 	
@@ -36,10 +40,23 @@ public class CreditController {
 		return creditRepo.save(credit);
 	}
 	
-	@DeleteMapping("/{id}")
-	public void delete(@PathVariable int id) {
-		creditRepo.deleteById(id);
+	@DeleteMapping("/")
+	public Optional<Credit> delete(@PathVariable Integer id) {
+		Optional<Credit> credit=creditRepo.findById(id);
+		if (credit.isPresent()) {
+			try {
+			creditRepo.deleteById(id);
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+						"Exception caught during credit delete");
+			}
+		}
+		else {
+			System.err.println("Credit delete error- no credit found for id"+id);
+		}
+		return credit;
 	}
-	
 	
 }
