@@ -24,7 +24,7 @@ public class Actor {
 
 	public Actor(int id, String firstName, String lastName, String gender, LocalDate birthdate) {
 		super();
-		id = id;
+		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.gender = gender;
@@ -46,7 +46,7 @@ public class Actor {
 
 
 	public void setid(int id) {
-		id = id;
+		this.id = id;
 	}
 
 
