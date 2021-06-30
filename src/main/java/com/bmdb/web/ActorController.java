@@ -67,11 +67,11 @@ public class ActorController {
 	}
 	
 	//get actor by first and last name
-	@GetMapping("/name")
-	public Optional<Actor> getAllByName(@RequestParam String firstName,@RequestParam String lastName) {
-		Optional<Actor> actor= actorRepo.findAllByName(firstName, lastName);
-		return actor;
-	}
+	//@GetMapping("/name")
+	//public Optional<Actor> getAllByName(@RequestParam String firstName,@RequestParam String lastName) {
+	//	Optional<Actor> actor= actorRepo.findAllByName(firstName, lastName);
+	//	return actor;
+	//}
 	
 	
 	
