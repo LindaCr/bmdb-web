@@ -3,11 +3,12 @@ package com.bmdb.db;
 import java.util.List;
 
 
+
 import org.springframework.data.repository.CrudRepository;
 
 import com.bmdb.business.Actor;
 import com.bmdb.business.Credit;
-import com.bmdb.business.Movie;
+
 
 public interface CreditRepo extends CrudRepository<Credit, Integer>{
 
