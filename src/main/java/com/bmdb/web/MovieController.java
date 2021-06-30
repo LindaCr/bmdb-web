@@ -9,6 +9,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.bmdb.business.Movie;
 import com.bmdb.db.MovieRepo;
+
+import java.util.List;
 import java.util.Optional;
 
 
@@ -65,6 +67,11 @@ public class MovieController {
 		return movie;
 	}
 	
+	// get all movies by rating
+	@GetMapping("/rating/{rating}")
+	public Iterable<Movie> getAllByRating(@PathVariable String rating) {
+		return movieRepo.findAllByRating(rating);
+	}
 	
-	
+
 }
