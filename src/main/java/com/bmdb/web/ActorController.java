@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.bmdb.business.Actor;
-import com.bmdb.business.Movie;
 import com.bmdb.db.ActorRepo;
 
 
@@ -66,6 +65,15 @@ public class ActorController {
 		}
 		return actor;
 	}
+	
+	//get actor by first and last name
+	@GetMapping("/name")
+	public Optional<Actor> getAllByName(@RequestParam String firstName,@RequestParam String lastName) {
+		Optional<Actor> actor= actorRepo.findAllByName(firstName, lastName);
+		return actor;
+	}
+	
+	
 	
 	
 }
